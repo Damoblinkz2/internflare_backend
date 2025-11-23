@@ -2,6 +2,7 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import usersRouter from "./routes/userRoutes.js";
 import jobsRouter from "./routes/jobRoutes.js";
+import jobApplicationsRouter from "./routes/jobApplicationRoutes.js";
 import { AppError } from "./utils/appError.js";
 import globalErrorHandler from "./controllers/errorController.js";
 
@@ -17,6 +18,7 @@ app.use(
 );
 
 app.use("/jobs", jobsRouter);
+app.use("/job-applications", jobApplicationsRouter);
 app.use("/user", usersRouter);
 
 // Catch-all route

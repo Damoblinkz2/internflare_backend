@@ -82,9 +82,9 @@ const updateJob = catchAsync(
 //REMOVE JOB
 const deleteJob = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const deleteProduct = await Job.findByIdAndDelete(req.params.id);
+    const deleteJob = await Job.findByIdAndDelete(req.params.id);
 
-    if (!deleteProduct) {
+    if (!deleteJob) {
       return next(new AppError("no job found with this id", 404));
     }
 

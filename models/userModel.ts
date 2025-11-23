@@ -9,6 +9,7 @@ export interface IUser extends Document {
   description: string;
   dob: Date;
   skillSet: string[];
+  employed: boolean;
   bio: string;
   profilePic: string;
 }
@@ -32,7 +33,14 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     trim: true,
   },
   dob: { type: Date },
-  accountType: { type: String, require: [true, "account tye should be added"] },
+  accountType: {
+    type: String,
+    require: [true, "account type should be added"],
+  },
+  employed: {
+    type: Boolean,
+    required: [true, "employment status should be provided"],
+  },
   skillSet: { type: [String], require: [true, "Add atleast one skill"] },
   bio: { type: String, trim: true },
   profilePic: {

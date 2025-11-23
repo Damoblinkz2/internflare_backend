@@ -1,6 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-// Optional: define a TypeScript interface for type safety
+//define a TypeScript interface for type safety
 export interface IJob extends Document {
   jobTitle: string;
   description: string;
