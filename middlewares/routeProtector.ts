@@ -3,36 +3,45 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../utils/appError.js";
 import User from "../models/userModel.js";
 
+/**
+ * Middleware to protect routes and check for valid JWT token in Authorization header.
+ * Grants access to authenticated users only.
+ * Attaches user data to request object.
+ * Calls next() middleware if successful, otherwise passes error to next.
+ */
 export const protectRoute = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // 1. Get token from headers
+    // 1. Get token from Authorization headers (format: Bearer token)
     let token: string | undefined;
     if (req.headers.authorization?.startsWith("Bearer")) {
       token = req.headers.authorization.split(" ")[1];
     }
 
+    // 2. If no token, user is not logged in
     if (!token) {
       return next(new AppError("You are not logged in!", 401));
     }
 
-    // 2. Verify token
+    // 3. Verify token using JWT_SECRET
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET as string
     ) as JwtPayload;
 
-    // 3. Check if user still exists
+    // 4. Check if user still exists in DB (e.g. account not deleted)
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
       return next(new AppError("User no longer exists", 401));
     }
 
-    // 4. Grant access
-    (req as any).user = currentUser; // attach user to request
+    // 5. Attach user object to request for downstream middlewares and route handlers
+    (req as any).user = currentUser;
+
+    // 6. Allow access
     next();
   } catch (err) {
     next(err);

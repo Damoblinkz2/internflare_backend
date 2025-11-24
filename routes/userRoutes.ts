@@ -1,6 +1,6 @@
 import express from "express";
-import { loginLimiter } from "../middlewares/rateLimit.js";
 
+import { loginLimiter } from "../middlewares/rateLimit.js";
 import {
   getAllUsers,
   addNewUsers,
@@ -10,12 +10,18 @@ import {
   loginUser,
 } from "../controllers/usersController.js";
 
+import { protectRoute } from "../middlewares/routeProtector.js";
+
 const router = express.Router();
 
 // USERS ROUTES
-router.route("/signup").get(getAllUsers).post(addNewUsers);
+router.route("/signup").get(protectRoute, getAllUsers).post(addNewUsers);
 
-router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+router
+  .route("/id/:id")
+  .get(protectRoute, getUser)
+  .patch(protectRoute, updateUser)
+  .delete(protectRoute, deleteUser);
 
 router.route("/login").post(loginLimiter, loginUser);
 

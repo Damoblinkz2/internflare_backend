@@ -33,7 +33,11 @@ const reviewsSchema: Schema<IReviews> = new mongoose.Schema({
     trim: true,
   },
 
-  reviewDate: { type: Date, require: [true, "review date needed"] },
+  reviewDate: {
+    type: Date,
+    require: [true, "review date needed"],
+    default: new Date(),
+  },
 
   reviewNote: {
     type: String,
@@ -43,7 +47,7 @@ const reviewsSchema: Schema<IReviews> = new mongoose.Schema({
 
 // Model
 const Reviews: Model<IReviews> = mongoose.model<IReviews>(
-  "Onboard",
+  "Reviews",
   reviewsSchema
 );
 
