@@ -3,6 +3,8 @@ import rateLimit from "express-rate-limit";
 import usersRouter from "./routes/userRoutes.js";
 import jobsRouter from "./routes/jobRoutes.js";
 import jobApplicationsRouter from "./routes/jobApplicationRoutes.js";
+import onBoard from "./routes/onBoardRoutes.js";
+import Review from "./routes/reviewRoutes.js";
 import { AppError } from "./utils/appError.js";
 import globalErrorHandler from "./controllers/errorController.js";
 
@@ -20,6 +22,8 @@ app.use(
 app.use("/jobs", jobsRouter);
 app.use("/job-applications", jobApplicationsRouter);
 app.use("/user", usersRouter);
+app.use("/board", onBoard);
+app.use("/reviews", Review);
 
 // Catch-all route
 app.use((req, res, next) => {

@@ -9,9 +9,12 @@ export interface IUser extends Document {
   description: string;
   dob: Date;
   skillSet: string[];
+  internFlareApproved: boolean;
   employed: boolean;
   bio: string;
   profilePic: string;
+  role: string;
+  signUpDate: Date;
 }
 
 //USER SCHEMA
@@ -39,7 +42,17 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   },
   employed: {
     type: Boolean,
+    default: false,
     required: [true, "employment status should be provided"],
+  },
+  role: {
+    type: String,
+    required: [true, "user role should be provided"],
+  },
+  internFlareApproved: {
+    type: Boolean,
+    default: false,
+    required: [true, "internflare approval"],
   },
   skillSet: { type: [String], require: [true, "Add atleast one skill"] },
   bio: { type: String, trim: true },
@@ -47,6 +60,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  signUpDate: { type: Date, default: new Date() },
 });
 
 // Model
