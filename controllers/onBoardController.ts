@@ -22,7 +22,7 @@ const getAllOnboardedUsers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-//ADD A NEW JOB
+//ADD NEW USER ONBOARD
 const addNewUserOnboard = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { userId, jobId, role, onBoardDate, workMode } = req.body;
@@ -44,7 +44,7 @@ const addNewUserOnboard = catchAsync(
   }
 );
 
-//GET A USER
+//GET A JOB ONBOARD
 const getJobOnboard = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const boardJob = await OnBoard.findById(req.params.id);
@@ -60,7 +60,7 @@ const getJobOnboard = catchAsync(
   }
 );
 
-//UPDATE A USER
+//UPDATE JOB ONBOARD
 
 const updateJobOnboard = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

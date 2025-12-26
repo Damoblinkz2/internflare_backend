@@ -13,12 +13,12 @@ const router = express.Router();
 
 //JOB APPLICATION ROUTES
 router
-  .route("/")
+  .route("/job-applications")
   .get(protectRoute, getAllJobApplications)
   .post(protectRoute, addNewJobApplications);
 
 router
-  .route("/:id")
+  .route("/job-applications/:id")
   .get(protectRoute, getJobApplication)
   .patch(protectRoute, updateJobApplication)
   .delete(protectRoute, deleteJobApplication);

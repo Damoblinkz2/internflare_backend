@@ -1,27 +1,44 @@
 import express from "express";
 
 import { loginLimiter } from "../middlewares/rateLimit.js";
+import { protectRoute } from "../middlewares/routeProtector.js";
 import {
   getAllUsers,
   addNewUsers,
   getUser,
   updateUser,
   deleteUser,
-  loginUser,
 } from "../controllers/usersController.js";
-
-import { protectRoute } from "../middlewares/routeProtector.js";
+import {
+  addNewCompanyProfiles,
+  deleteCompanyProfile,
+  getAllCompanies,
+  getCompanyProfile,
+  updateCompanyProfile,
+} from "../controllers/companyController.js";
+import loginUser from "../controllers/login.js";
 
 const router = express.Router();
 
-// USERS ROUTES
-router.route("/signup").get(protectRoute, getAllUsers).post(addNewUsers);
+//INTERNS ROUTES
+router.route("/interns/all").get(protectRoute, getAllUsers);
+router.route("/intern/signup").post(addNewUsers);
 
 router
-  .route("/id/:id")
+  .route("/intern/:id")
   .get(protectRoute, getUser)
   .patch(protectRoute, updateUser)
   .delete(protectRoute, deleteUser);
+
+//COMPANY ROUTES
+router.route("/companies/all").get(protectRoute, getAllCompanies);
+router.route("/company/signup").post(addNewCompanyProfiles);
+
+router
+  .route("/company/:id")
+  .get(protectRoute, getCompanyProfile)
+  .patch(protectRoute, updateCompanyProfile)
+  .delete(protectRoute, deleteCompanyProfile);
 
 router.route("/login").post(loginLimiter, loginUser);
 

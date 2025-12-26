@@ -22,17 +22,21 @@ const getAllJobs = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-//ADD A PRODDUCT
+//ADD NEW JOB
 const addNewJobs = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    //   const {jobTitle, jobDesc, skillSet} = req.body;
+    const companyId = "";
+    const { jobTitle, jobDesc, jobType } = req.body;
 
     if (!req.body) {
       return next(new AppError("no job input", 400));
     }
 
     const newJob = new Job({
-      ...req.body,
+      jobTitle,
+      jobDesc,
+      jobType,
+      companyId,
     });
 
     await newJob.save();

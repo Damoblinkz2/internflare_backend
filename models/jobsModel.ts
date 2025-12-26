@@ -3,8 +3,9 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 //define a TypeScript interface for type safety
 export interface IJob extends Document {
   jobTitle: string;
-  description: string;
+  jobDesc: string;
   jobType: string;
+  companyId: string;
 }
 
 const jobSchema: Schema<IJob> = new mongoose.Schema({
@@ -13,7 +14,7 @@ const jobSchema: Schema<IJob> = new mongoose.Schema({
     required: [true, "Job title must be added"],
     trim: true,
   },
-  description: {
+  jobDesc: {
     type: String,
     required: [true, "Job description must be added"],
     trim: true,
@@ -21,6 +22,10 @@ const jobSchema: Schema<IJob> = new mongoose.Schema({
   jobType: {
     type: String,
     required: [true, "Job type must be added"],
+  },
+  companyId: {
+    type: String,
+    required: [true, "Company ID must be provided"],
   },
 });
 

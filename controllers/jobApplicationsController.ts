@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-
 import { AppError } from "../utils/appError.js";
 import JobApplication from "../models/jobApplicationModel.js";
 import { APIFeatures } from "../utils/apiFeatures.js";
@@ -24,17 +23,22 @@ const getAllJobApplications = catchAsync(
   }
 );
 
-//ADD A PRODDUCT
+//ADD NEW JOB APPLICATION
 const addNewJobApplications = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    //   const {jobTitle, jobDesc, skillSet} = req.body;
+    const userId = "";
+    const { coverLetter, resumeLink, portfolioLink, jobId } = req.body;
 
     if (!req.body) {
       return next(new AppError("no job application input", 400));
     }
 
     const newJobApplication = new JobApplication({
-      ...req.body,
+      coverLetter,
+      resumeLink,
+      portfolioLink,
+      userId,
+      jobId,
     });
 
     await newJobApplication.save();

@@ -7,6 +7,7 @@ export interface IOnBoard extends Document {
   role: string;
   onBoardDate: Date;
   workMode: string;
+  active: boolean;
 }
 
 //ONBOARD SCHEMA
@@ -32,6 +33,10 @@ const onBoardSchema: Schema<IOnBoard> = new mongoose.Schema({
   role: {
     type: String,
     required: [true, "user role should be provided"],
+  },
+  active: {
+    type: Boolean,
+    default: true,
   },
 });
 

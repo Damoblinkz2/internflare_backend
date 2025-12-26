@@ -10,7 +10,7 @@ export interface IReviews extends Document {
   reviewDate: Date;
 }
 
-//ONBOARD SCHEMA
+//REVIEWS SCHEMA
 const reviewsSchema: Schema<IReviews> = new mongoose.Schema({
   fromUserId: {
     type: String,

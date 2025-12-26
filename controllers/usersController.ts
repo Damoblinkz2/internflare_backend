@@ -23,13 +23,13 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     .filter()
     .sort()
     .pagination();
-  const jobs = await features.query;
+  const users = await features.query;
 
   //SEND RESPONSE
   res.status(200).json({
     status: "success",
-    results: jobs.length,
-    data: { jobs },
+    results: users.length,
+    data: { users },
   });
 });
 
@@ -130,34 +130,4 @@ const deleteUser = catchAsync(
   }
 );
 
-//LOGIN
-const loginUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password }: { email: string; password: string } = req.body;
-
-    // 1. Check required fields
-    if (!email || !password) {
-      return next(new AppError("Please provide email and password", 400));
-    }
-
-    const user: IUser | null = await User.findOne({ email });
-
-    if (!user || !(await argon2.verify(user.password, password))) {
-      return next(new AppError("Incorrect email or password", 401));
-    }
-
-    const token = signToken(user._id.toString());
-
-    res.status(200).json({
-      status: "success",
-      token,
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-      },
-    });
-  }
-);
-
-export { getAllUsers, addNewUsers, getUser, updateUser, deleteUser, loginUser };
+export { getAllUsers, addNewUsers, getUser, updateUser, deleteUser };
