@@ -8,17 +8,18 @@ import {
   updateJobApplication,
   deleteJobApplication,
 } from "../controllers/jobApplicationsController.js";
+import { uploadFile } from "../middlewares/fileUpload.js";
 
 const router = express.Router();
 
 //JOB APPLICATION ROUTES
 router
-  .route("/job-applications")
+  .route("/")
   .get(protectRoute, getAllJobApplications)
-  .post(protectRoute, addNewJobApplications);
+  .post(protectRoute, uploadFile.single("resume"), addNewJobApplications);
 
 router
-  .route("/job-applications/:id")
+  .route("/:id")
   .get(protectRoute, getJobApplication)
   .patch(protectRoute, updateJobApplication)
   .delete(protectRoute, deleteJobApplication);

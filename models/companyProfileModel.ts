@@ -10,6 +10,9 @@ export interface ICompanyProfile extends Document {
   industry: string;
   companySize: string;
   location: string;
+  accountType: string;
+  currentlyHiring: boolean;
+  role: string;
   profilePic: string;
   signUpDate: Date;
 }
@@ -51,6 +54,19 @@ const companySchema: Schema<ICompanyProfile> = new mongoose.Schema({
   profilePic: {
     type: String,
     unique: true,
+  },
+  accountType: {
+    type: String,
+    default: "company",
+    required: [true, "account type should be provided"],
+  },
+  currentlyHiring: {
+    type: Boolean,
+    default: false,
+  },
+  role: {
+    type: String,
+    default: "employer",
   },
   verified: {
     type: Boolean,

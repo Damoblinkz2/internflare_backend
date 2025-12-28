@@ -5,6 +5,7 @@ export interface IJob extends Document {
   jobTitle: string;
   jobDesc: string;
   jobType: string;
+  stillOpened: boolean;
   companyId: string;
 }
 
@@ -22,6 +23,11 @@ const jobSchema: Schema<IJob> = new mongoose.Schema({
   jobType: {
     type: String,
     required: [true, "Job type must be added"],
+  },
+  stillOpened: {
+    type: Boolean,
+    default: true,
+    required: [true, "Still open?"],
   },
   companyId: {
     type: String,

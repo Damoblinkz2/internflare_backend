@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from "express";
+import fs from "fs";
+import { fileTypeFromFile } from "file-type";
+
 import { AppError } from "../utils/appError.js";
 import JobApplication from "../models/jobApplicationModel.js";
 import { APIFeatures } from "../utils/apiFeatures.js";
 import { catchAsync } from "../utils/catchAsync.js";
+import { ALLOWED_MIME_TYPES } from "../middlewares/fileUpload.js";
 
 //GET ALL JOBS
 const getAllJobApplications = catchAsync(
@@ -24,18 +28,30 @@ const getAllJobApplications = catchAsync(
 );
 
 //ADD NEW JOB APPLICATION
+
 const addNewJobApplications = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = "";
-    const { coverLetter, resumeLink, portfolioLink, jobId } = req.body;
+    const userId = req.user!._id;
+    const { coverLetter, portfolioLink, jobId } = req.body;
 
     if (!req.body) {
       return next(new AppError("no job application input", 400));
     }
 
+    if (!req.file) return next(new AppError("no resume uploaded", 400));
+
+    //  Read magic bytes
+    const type = await fileTypeFromFile(req.file.path);
+
+    // Reject unknown or disallowed types
+    if (!type || !ALLOWED_MIME_TYPES.has(type.mime)) {
+      fs.unlinkSync(req.file.path); // delete file immediately
+      return res.status(400).json({ message: "Invalid file content" });
+    }
+
     const newJobApplication = new JobApplication({
       coverLetter,
-      resumeLink,
+      resumeLink: req.file.path,
       portfolioLink,
       userId,
       jobId,

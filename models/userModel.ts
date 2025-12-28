@@ -14,6 +14,7 @@ export interface IUser extends Document {
   bio: string;
   profilePic: string;
   role: string;
+  active: boolean;
   signUpDate: Date;
 }
 
@@ -38,6 +39,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   dob: { type: Date },
   accountType: {
     type: String,
+    default: "personal",
     require: [true, "account type should be added"],
   },
   employed: {
@@ -53,6 +55,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     type: Boolean,
     default: false,
     required: [true, "internflare approval"],
+  },
+  active: {
+    type: Boolean,
+    default: false,
+    required: [true, "Activate account"],
   },
   skillSet: { type: [String], require: [true, "Add atleast one skill"] },
   bio: { type: String, trim: true },

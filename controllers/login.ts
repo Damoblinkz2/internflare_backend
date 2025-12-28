@@ -9,9 +9,9 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/appError.js";
 
 // Create a function to sign tokens
-const signToken = (userId: string) => {
+const signToken = (userId: string, role: string) => {
   return jwt.sign(
-    { id: userId }, // payload
+    { id: userId, role }, // payload
     process.env.JWT_SECRET as string, // secret key
     { expiresIn: "1h" } // token expires in 1 hour
   );
@@ -45,7 +45,7 @@ const loginUser = catchAsync(
       return next(new AppError("Incorrect email or password", 401));
     }
 
-    const token = signToken(details._id.toString());
+    const token = signToken(details._id.toString(), details.role);
 
     res.status(200).json({
       status: "success",

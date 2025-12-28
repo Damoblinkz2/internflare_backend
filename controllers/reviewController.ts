@@ -25,8 +25,8 @@ const getAllReviews = catchAsync(async (req: Request, res: Response) => {
 //ADD A NEW JOB
 const addNewReview = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { fromUserId, toUserId, jobId, stars, reviewNote, reviewDate } =
-      req.body;
+    const fromUserId = req.user!._id;
+    const { toUserId, jobId, stars, reviewNote, reviewDate } = req.body;
 
     const review = new Reviews({
       fromUserId,

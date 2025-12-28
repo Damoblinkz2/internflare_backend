@@ -25,7 +25,7 @@ const getAllJobs = catchAsync(async (req: Request, res: Response) => {
 //ADD NEW JOB
 const addNewJobs = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const companyId = "";
+    const companyId = req.user!._id;
     const { jobTitle, jobDesc, jobType } = req.body;
 
     if (!req.body) {

@@ -16,6 +16,10 @@ import {
   getCompanyProfile,
   updateCompanyProfile,
 } from "../controllers/companyController.js";
+import {
+  adminOverview,
+  activateOrDeactivateUsers,
+} from "../controllers/adminController.js";
 import loginUser from "../controllers/login.js";
 
 const router = express.Router();
@@ -39,6 +43,10 @@ router
   .get(protectRoute, getCompanyProfile)
   .patch(protectRoute, updateCompanyProfile)
   .delete(protectRoute, deleteCompanyProfile);
+
+//ADMIN ROUTES
+router.route("/admin/overview").get(protectRoute, adminOverview);
+router.route("/admin/user/:id").post(protectRoute, activateOrDeactivateUsers);
 
 router.route("/login").post(loginLimiter, loginUser);
 

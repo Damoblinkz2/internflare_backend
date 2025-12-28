@@ -21,7 +21,7 @@ app.use(
 
 app.use("/jobs", jobsRouter);
 app.use("/job-applications", jobApplicationsRouter);
-app.use("/user", usersRouter);
+app.use("/account", usersRouter);
 app.use("/board", onBoard);
 app.use("/reviews", Review);
 

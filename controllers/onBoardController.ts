@@ -25,7 +25,8 @@ const getAllOnboardedUsers = catchAsync(async (req: Request, res: Response) => {
 //ADD NEW USER ONBOARD
 const addNewUserOnboard = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, jobId, role, onBoardDate, workMode } = req.body;
+    const userId = req.user!._id;
+    const { jobId, role, onBoardDate, workMode } = req.body;
 
     const onBoarding = new OnBoard({
       userId,
