@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import { AppError } from "../utils/appError.js";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -38,7 +39,7 @@ const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
   if (ALLOWED_MIME_TYPES.has(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Unsupported file type"));
+    cb(new AppError("Unsupported file type", 415));
   }
 };
 
@@ -46,29 +47,8 @@ const uploadFile = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
+    fileSize: 5 * 1024 * 1024, // 5MB MAX FILE SIZE
   },
 });
 
 export { uploadFile, ALLOWED_MIME_TYPES };
-
-// router.post(
-//   "/upload",
-//   uploadFile.single("file"),
-//   (req, res) => {
-//     if (!req.file) {
-//       return res.status(400).json({ message: "No file uploaded" });
-//     }
-
-//     res.status(201).json({
-//       message: "File uploaded successfully",
-//       file: {
-//         filename: req.file.filename,
-//         originalName: req.file.originalname,
-//         mimetype: req.file.mimetype,
-//         size: req.file.size,
-//         path: req.file.path
-//       }
-//     });
-//   }
-// );

@@ -6,6 +6,7 @@ import { AppError } from "../utils/appError.js";
 import User, { IUser } from "../models/userModel.js";
 import { APIFeatures } from "../utils/apiFeatures.js";
 import { catchAsync } from "../utils/catchAsync.js";
+import saveImage from "../utils/saveImages.js";
 
 // Create a function to sign tokens
 export const signToken = (userId: string) => {
@@ -92,9 +93,16 @@ const updateUser = catchAsync(
       updatedData.password = await argon2.hash(password);
     }
 
+    const imagePath = req.file
+      ? await saveImage(req.file.buffer)
+      : "upload/image/avatar.jpg";
+
     const user: IUser | null = await User.findByIdAndUpdate(
       req.params.id,
-      updatedData,
+      {
+        ...updatedData,
+        imagePath,
+      },
       {
         new: true, // return updated document
         runValidators: true, // ensure validation rules are enforced

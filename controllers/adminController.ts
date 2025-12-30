@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import fs from "fs";
 import { fileTypeFromFile } from "file-type";
 
@@ -71,32 +71,28 @@ const adminOverview = catchAsync(async (req: Request, res: Response) => {
 });
 
 //SEE RECENT JOB PLACEMENT
-const jobPlacement = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    //SEE RECENT JOB PLACEMENT
-    const onboarding = new APIFeatures(OnBoard.find(), req.query)
-      .filter()
-      .sort()
-      .pagination();
-    const data = await onboarding.query;
+const jobPlacement = catchAsync(async (req: Request, res: Response) => {
+  //SEE RECENT JOB PLACEMENT
+  const onboarding = new APIFeatures(OnBoard.find(), req.query)
+    .filter()
+    .sort()
+    .pagination();
+  const data = await onboarding.query;
 
-    if (!data)
-      return res.status(404).json({ status: "no Job placement found" });
+  if (!data) throw new AppError("No Job placement found", 404);
 
-    res.status(201).json({
-      status: "success",
-      data,
-    });
-  }
-);
+  res.status(201).json({
+    status: "success",
+    data,
+  });
+});
 
 //ACTIVATE OR DEACTIVATE USERS
 const activateOrDeactivateUsers = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const role = req.user!.role;
 
-    if (role !== "admin")
-      return res.status(401).json({ status: "Unauthorized access" });
+    if (role !== "admin") throw new AppError("Forbidden access", 403);
 
     const user: IUser | null = await User.findByIdAndUpdate(
       req.params.id,
@@ -130,21 +126,21 @@ const activateOrDeactivateUsers = catchAsync(
 );
 
 //REMOVE JOB
-const deleteJobApplication = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const deleteJobApplication = await JobApplication.findByIdAndDelete(
-      req.params.id
+const deleteJobApplication = catchAsync(async (req: Request, res: Response) => {
+  const deleteJobApplication = await JobApplication.findByIdAndDelete(
+    req.params.id
+  );
+
+  if (!deleteJobApplication)
+    throw new AppError(
+      `No job application found with id ${req.params.id}`,
+      404
     );
 
-    if (!deleteJobApplication) {
-      return next(new AppError("no job application found with this id", 404));
-    }
-
-    res.status(200).json({
-      status: "success",
-    });
-  }
-);
+  res.status(200).json({
+    status: "success",
+  });
+});
 
 export {
   adminOverview,

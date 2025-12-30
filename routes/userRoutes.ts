@@ -21,6 +21,7 @@ import {
   activateOrDeactivateUsers,
 } from "../controllers/adminController.js";
 import loginUser from "../controllers/login.js";
+import imageUpload from "../middlewares/imageUpload.js";
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.route("/intern/signup").post(addNewUsers);
 router
   .route("/intern/:id")
   .get(protectRoute, getUser)
-  .patch(protectRoute, updateUser)
+  .patch(protectRoute, imageUpload.single("profile-pic"), updateUser)
   .delete(protectRoute, deleteUser);
 
 //COMPANY ROUTES
@@ -41,7 +42,7 @@ router.route("/company/signup").post(addNewCompanyProfiles);
 router
   .route("/company/:id")
   .get(protectRoute, getCompanyProfile)
-  .patch(protectRoute, updateCompanyProfile)
+  .patch(protectRoute, imageUpload.single("profile-pic"), updateCompanyProfile)
   .delete(protectRoute, deleteCompanyProfile);
 
 //ADMIN ROUTES

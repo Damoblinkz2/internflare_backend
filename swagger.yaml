@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: InternFlare Job API
   version: 1.0.0
-  description: API documentation for job-related endpoints protected with JWT authentication.
+  description: API documentation for internflarejobs endpoints protected with JWT authentication.
 
 servers:
   - url: http://localhost:8000
@@ -20,14 +20,16 @@ components:
       type: object
       required:
         - jobTitle
-        - description
+        - jobDesc
         - jobType
+        - stillOpened
+        - companyId
       properties:
         jobTitle:
           type: string
           example: "Frontend Developer"
           description: "Title of the job"
-        description:
+        jobDesc:
           type: string
           example: "Develop and maintain web applications"
           description: "Detailed description of the job"
@@ -35,6 +37,276 @@ components:
           type: string
           example: "Full-time"
           description: "Type of job (e.g., Full-time, Part-time, Contract)"
+        stillOpened:
+          type: boolean
+          example: true
+          description: "Whether the job is still open"
+        companyId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4567"
+          description: "ID of the company posting the job"
+
+    User:
+      type: object
+      required:
+        - email
+        - name
+        - password
+        - accountType
+        - imagePath
+        - skillSet
+        - internFlareApproved
+        - employed
+        - role
+        - active
+      properties:
+        email:
+          type: string
+          example: "user@example.com"
+          description: "User's email address"
+        name:
+          type: string
+          example: "Adedamola Olatunji"
+          description: "User's full name"
+        password:
+          type: string
+          example: "password123"
+          description: "User's password"
+        accountType:
+          type: string
+          example: "personal"
+          description: "Type of account"
+        imagePath:
+          type: string
+          example: "upload/image/avatar.jpg"
+          description: "Path to user's image"
+        dob:
+          type: string
+          format: date
+          example: "1990-01-01"
+          description: "User's date of birth"
+        skillSet:
+          type: array
+          items:
+            type: string
+          example: ["JavaScript", "React"]
+          description: "List of user's skills"
+        internFlareApproved:
+          type: boolean
+          example: false
+          description: "Whether the user is approved by InternFlare"
+        employed:
+          type: boolean
+          example: false
+          description: "Whether the user is employed"
+        bio:
+          type: string
+          example: "A passionate developer"
+          description: "User's biography"
+        profilePic:
+          type: string
+          example: "profile-pic.jpg"
+          description: "Path to user's profile picture"
+        role:
+          type: string
+          example: "intern"
+          description: "User's role"
+        active:
+          type: boolean
+          example: false
+          description: "Whether the account is active"
+        signUpDate:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+          description: "Date when the user signed up"
+
+    JobApplication:
+      type: object
+      required:
+        - userId
+        - jobId
+        - resume
+        - status
+      properties:
+        userId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4567"
+          description: "ID of the user applying"
+        jobId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4568"
+          description: "ID of the job applied for"
+        resume:
+          type: string
+          example: "resume.pdf"
+          description: "Path to the resume file"
+        status:
+          type: string
+          example: "pending"
+          description: "Status of the application"
+        appliedDate:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+          description: "Date when the application was submitted"
+
+    CompanyProfile:
+      type: object
+      required:
+        - email
+        - companyName
+        - password
+        - industry
+        - companySize
+        - location
+        - accountType
+        - role
+        - verified
+      properties:
+        email:
+          type: string
+          example: "company@example.com"
+          description: "Company's email address"
+        companyName:
+          type: string
+          example: "Tech Corp"
+          description: "Name of the company"
+        password:
+          type: string
+          example: "password123"
+          description: "Company's password"
+        phoneNumber:
+          type: string
+          example: "+1234567890"
+          description: "Company's phone number"
+        verified:
+          type: boolean
+          example: false
+          description: "Whether the company is verified"
+        industry:
+          type: string
+          example: "Technology"
+          description: "Industry of the company"
+        companySize:
+          type: string
+          example: "50-100"
+          description: "Size of the company"
+        location:
+          type: string
+          example: "New York"
+          description: "Location of the company"
+        accountType:
+          type: string
+          example: "company"
+          description: "Type of account"
+        currentlyHiring:
+          type: boolean
+          example: true
+          description: "Whether the company is currently hiring"
+        role:
+          type: string
+          example: "employer"
+          description: "Role of the account"
+        profilePic:
+          type: string
+          example: "company-pic.jpg"
+          description: "Path to company's profile picture"
+        signUpDate:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+          description: "Date when the company signed up"
+
+    Review:
+      type: object
+      required:
+        - userId
+        - companyId
+        - rating
+        - reviewText
+      properties:
+        userId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4567"
+          description: "ID of the user who wrote the review"
+        companyId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4568"
+          description: "ID of the company being reviewed"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+          description: "Rating given by the user"
+        reviewText:
+          type: string
+          example: "Great company to work for"
+          description: "Text of the review"
+        reviewDate:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+          description: "Date when the review was posted"
+
+    OnBoard:
+      type: object
+      required:
+        - userId
+        - jobId
+        - role
+        - onBoardDate
+        - workMode
+        - active
+      properties:
+        userId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4567"
+          description: "ID of the user being onboarded"
+        jobId:
+          type: string
+          example: "60d5ecb74b24c72b8c8b4568"
+          description: "ID of the job"
+        role:
+          type: string
+          example: "intern"
+          description: "Role of the user"
+        onBoardDate:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+          description: "Date when the user was onboarded"
+        workMode:
+          type: string
+          example: "remote"
+          description: "Work mode (e.g., remote, onsite)"
+        active:
+          type: boolean
+          example: true
+          description: "Whether the onboarding is active"
+
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "success"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "60d5ecb74b24c72b8c8b4567"
+            email:
+              type: string
+              example: "user@example.com"
+            name:
+              type: string
+              example: "John Doe"
 
   responses:
     UnauthorizedError:
@@ -52,12 +324,12 @@ components:
                 example: "You are not logged in!"
 
 paths:
-  /jobs:
+  /api/v1/jobs:
     get:
       security:
         - bearerAuth: []
       summary: "Get all jobs"
-      description: "Retrieves a list of jobs with optional filtering, sorting, and pagination."
+      description: "Retrieves a list of all jobs with optional filtering, sorting, and pagination."
       parameters:
         - in: query
           name: sort
@@ -125,7 +397,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      product:
+                      newJob:
                         $ref: "#/components/schemas/Job"
         "400":
           description: "Invalid input"
@@ -143,7 +415,827 @@ paths:
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
-  /jobs/{id}:
+  /api/v1/job-applications:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get all job applications"
+      description: "Retrieves a list of job applications."
+      responses:
+        "200":
+          description: "A list of job applications"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      applications:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/JobApplication"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new job application"
+      description: "Creates a new job application with resume upload."
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                resume:
+                  type: string
+                  format: binary
+                  description: "Resume file"
+      responses:
+        "201":
+          description: "Application created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      application:
+                        $ref: "#/components/schemas/JobApplication"
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Invalid application data"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/job-applications/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID of the job application"
+        schema:
+          type: string
+
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a job application by ID"
+      description: "Retrieves details of a single job application by its ID."
+      responses:
+        "200":
+          description: "Job application details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      application:
+                        $ref: "#/components/schemas/JobApplication"
+        "404":
+          description: "Application not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no application found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Update a job application by ID"
+      description: "Updates one or more fields of a job application by its ID."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobApplication"
+      responses:
+        "200":
+          description: "Application updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      application:
+                        $ref: "#/components/schemas/JobApplication"
+        "404":
+          description: "Application not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no application found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete a job application by ID"
+      description: "Deletes a job application by its ID."
+      responses:
+        "200":
+          description: "Application deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+        "404":
+          description: "Application not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no application found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/users:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get all users"
+      description: "Retrieves a list of users."
+      responses:
+        "200":
+          description: "A list of users"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new user"
+      description: "Creates a new user with the provided details."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: "User created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Invalid user data"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/users/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID of the user"
+        schema:
+          type: string
+
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a user by ID"
+      description: "Retrieves details of a single user by their ID."
+      responses:
+        "200":
+          description: "User details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+        "404":
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no user found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Update a user by ID"
+      description: "Updates one or more fields of a user by their ID."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: "User updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+        "404":
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no user found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete a user by ID"
+      description: "Deletes a user by their ID."
+      responses:
+        "200":
+          description: "User deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+        "404":
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no user found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/reviews:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get all reviews"
+      description: "Retrieves a list of reviews."
+      responses:
+        "200":
+          description: "A list of reviews"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      reviews:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Review"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new review"
+      description: "Creates a new review with the provided details."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+      responses:
+        "201":
+          description: "Review created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: "#/components/schemas/Review"
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Invalid review data"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/reviews/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID of the review"
+        schema:
+          type: string
+
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get a review by ID"
+      description: "Retrieves details of a single review by its ID."
+      responses:
+        "200":
+          description: "Review details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: "#/components/schemas/Review"
+        "404":
+          description: "Review not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no review found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Update a review by ID"
+      description: "Updates one or more fields of a review by its ID."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+      responses:
+        "200":
+          description: "Review updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: "#/components/schemas/Review"
+        "404":
+          description: "Review not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no review found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete a review by ID"
+      description: "Deletes a review by its ID."
+      responses:
+        "200":
+          description: "Review deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+        "404":
+          description: "Review not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no review found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/onboard:
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get all onboard records"
+      description: "Retrieves a list of onboard records."
+      responses:
+        "200":
+          description: "A list of onboard records"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      onboard:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/OnBoard"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    post:
+      security:
+        - bearerAuth: []
+      summary: "Create a new onboard record"
+      description: "Creates a new onboard record with the provided details."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnBoard"
+      responses:
+        "201":
+          description: "Onboard record created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      onboard:
+                        $ref: "#/components/schemas/OnBoard"
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Invalid onboard data"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/onboard/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID of the onboard record"
+        schema:
+          type: string
+
+    get:
+      security:
+        - bearerAuth: []
+      summary: "Get an onboard record by ID"
+      description: "Retrieves details of a single onboard record by its ID."
+      responses:
+        "200":
+          description: "Onboard record details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      onboard:
+                        $ref: "#/components/schemas/OnBoard"
+        "404":
+          description: "Onboard record not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no onboard record found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    patch:
+      security:
+        - bearerAuth: []
+      summary: "Update an onboard record by ID"
+      description: "Updates one or more fields of an onboard record by its ID."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnBoard"
+      responses:
+        "200":
+          description: "Onboard record updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      onboard:
+                        $ref: "#/components/schemas/OnBoard"
+        "404":
+          description: "Onboard record not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no onboard record found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    delete:
+      security:
+        - bearerAuth: []
+      summary: "Delete an onboard record by ID"
+      description: "Deletes an onboard record by its ID."
+      responses:
+        "200":
+          description: "Onboard record deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+        "404":
+          description: "Onboard record not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "no onboard record found with this id"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /api/v1/login:
+    post:
+      summary: "User login"
+      description: "Authenticates a user and returns a JWT token."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        "200":
+          description: "Login successful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: "Invalid credentials"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Invalid email or password"
+        "429":
+          description: "Too many requests"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Too many login attempts, please try again later"
+
+  /api/v1/jobs/{id}:
     parameters:
       - in: path
         name: id
@@ -225,7 +1317,7 @@ paths:
                     example: "fail"
                   message:
                     type: string
-                    example: "no product found with this id"
+                    example: "no job found with this id"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 

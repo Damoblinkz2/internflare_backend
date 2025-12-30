@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import fs from "fs";
 import { fileTypeFromFile } from "file-type";
 
@@ -30,15 +30,13 @@ const getAllJobApplications = catchAsync(
 //ADD NEW JOB APPLICATION
 
 const addNewJobApplications = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const userId = req.user!._id;
     const { coverLetter, portfolioLink, jobId } = req.body;
 
-    if (!req.body) {
-      return next(new AppError("no job application input", 400));
-    }
+    if (!req.body) throw new AppError("no job application input", 400);
 
-    if (!req.file) return next(new AppError("no resume uploaded", 400));
+    if (!req.file) throw new AppError("no resume uploaded", 400);
 
     //  Read magic bytes
     const type = await fileTypeFromFile(req.file.path);
@@ -61,66 +59,59 @@ const addNewJobApplications = catchAsync(
 
     res.status(201).json({
       status: "success",
-      data: { product: newJobApplication },
+      data: { jobApplication: newJobApplication },
     });
   }
 );
 
 //GET A JOB
-const getJobApplication = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const jobApplication = await JobApplication.findById(req.params.id);
+const getJobApplication = catchAsync(async (req: Request, res: Response) => {
+  const jobApplication = await JobApplication.findById(req.params.id);
 
-    if (!jobApplication) {
-      return next(new AppError("no job applicaion found with this id", 404));
-    }
+  if (!jobApplication)
+    throw new AppError("no job applicaion found with this id", 404);
 
-    res.status(200).json({
-      status: "success",
-      data: { jobApplication },
-    });
-  }
-);
+  res.status(200).json({
+    status: "success",
+    data: { jobApplication },
+  });
+});
 
 //UPDATE A JOB
-const updateJobApplication = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const jobApplication = await JobApplication.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-    if (!jobApplication) {
-      return next(new AppError("no product found with this id", 404));
+const updateJobApplication = catchAsync(async (req: Request, res: Response) => {
+  const jobApplication = await JobApplication.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
     }
+  );
 
-    res.status(200).json({
-      status: "success",
-      jobApplication,
-    });
-  }
-);
+  if (!jobApplication) throw new AppError("no job found with this id", 404);
+
+  res.status(200).json({
+    status: "success",
+    jobApplication,
+  });
+});
 
 //REMOVE JOB
-const deleteJobApplication = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const deleteJobApplication = await JobApplication.findByIdAndDelete(
-      req.params.id
+const deleteJobApplication = catchAsync(async (req: Request, res: Response) => {
+  const deleteJobApplication = await JobApplication.findByIdAndDelete(
+    req.params.id
+  );
+
+  if (!deleteJobApplication)
+    throw new AppError(
+      `No job application found with id ${req.params.id}`,
+      404
     );
 
-    if (!deleteJobApplication) {
-      return next(new AppError("no job application found with this id", 404));
-    }
-
-    res.status(200).json({
-      status: "success",
-    });
-  }
-);
+  res.status(200).json({
+    status: "success",
+  });
+});
 
 export {
   getAllJobApplications,

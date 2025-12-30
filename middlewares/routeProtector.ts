@@ -44,7 +44,7 @@ export const protectRoute = async (
         currentUser = await CompanyProfile.findById(decoded.id);
         break;
       default:
-        return next(new AppError("Invalid token role", 401));
+        return next(new AppError("Invalid token", 401));
     }
 
     if (!currentUser) {

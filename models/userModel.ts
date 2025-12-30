@@ -6,7 +6,7 @@ export interface IUser extends Document {
   name: string;
   password: string;
   accountType: string;
-  description: string;
+  imagePath: string;
   dob: Date;
   skillSet: string[];
   internFlareApproved: boolean;
@@ -41,6 +41,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     type: String,
     default: "personal",
     require: [true, "account type should be added"],
+  },
+  imagePath: {
+    type: String,
+    default: "upload/image/avatar.jpg",
+    require: [true, "image path should be added"],
   },
   employed: {
     type: Boolean,

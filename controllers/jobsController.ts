@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
 import { AppError } from "../utils/appError.js";
 import Job from "../models/jobsModel.js";
@@ -23,79 +23,63 @@ const getAllJobs = catchAsync(async (req: Request, res: Response) => {
 });
 
 //ADD NEW JOB
-const addNewJobs = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const companyId = req.user!._id;
-    const { jobTitle, jobDesc, jobType } = req.body;
+const addNewJobs = catchAsync(async (req: Request, res: Response) => {
+  const companyId = req.user!._id;
+  const { jobTitle, jobDesc, jobType } = req.body;
 
-    if (!req.body) {
-      return next(new AppError("no job input", 400));
-    }
+  if (!req.body) new AppError("no job input", 400);
 
-    const newJob = new Job({
-      jobTitle,
-      jobDesc,
-      jobType,
-      companyId,
-    });
+  const newJob = new Job({
+    jobTitle,
+    jobDesc,
+    jobType,
+    companyId,
+  });
 
-    await newJob.save();
+  await newJob.save();
 
-    res.status(201).json({
-      status: "success",
-      data: { product: newJob },
-    });
-  }
-);
+  res.status(201).json({
+    status: "success",
+    data: { newJob },
+  });
+});
 
 //GET A JOB
-const getJob = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const job = await Job.findById(req.params.id);
+const getJob = catchAsync(async (req: Request, res: Response) => {
+  const job = await Job.findById(req.params.id);
 
-    if (!job) {
-      return next(new AppError("no job found with this id", 404));
-    }
+  if (!job) throw new AppError("no job found with this id", 404);
 
-    res.status(200).json({
-      status: "success",
-      data: { job },
-    });
-  }
-);
+  res.status(200).json({
+    status: "success",
+    data: { job },
+  });
+});
 
 //UPDATE A JOB
-const updateJob = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const job = await Job.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+const updateJob = catchAsync(async (req: Request, res: Response) => {
+  const job = await Job.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-    if (!job) {
-      return next(new AppError("no product found with this id", 404));
-    }
+  if (!job) throw new AppError("no job found with this id", 404);
 
-    res.status(200).json({
-      status: "success",
-      job,
-    });
-  }
-);
+  res.status(200).json({
+    status: "success",
+    job,
+  });
+});
 
 //REMOVE JOB
-const deleteJob = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const deleteJob = await Job.findByIdAndDelete(req.params.id);
+const deleteJob = catchAsync(async (req: Request, res: Response) => {
+  const deleteJob = await Job.findByIdAndDelete(req.params.id);
 
-    if (!deleteJob) {
-      return next(new AppError("no job found with this id", 404));
-    }
+  if (!deleteJob) throw new AppError("no job found with this id", 404);
 
-    res.status(200).json({
-      status: "success",
-    });
-  }
-);
+  res.status(200).json({
+    status: "success",
+  });
+});
 
 export { getAllJobs, addNewJobs, getJob, updateJob, deleteJob };

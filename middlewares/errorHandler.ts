@@ -34,11 +34,7 @@ const sendErrorDev = (err: AppError, req: Request, res: Response): void => {
     return;
   }
 
-  console.error("ERROR:", err);
-  res.status(err.statusCode).render("error", {
-    title: "Something went wrong",
-    msg: err.message,
-  });
+  console.error("DEV ERROR:", err);
 };
 
 const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
@@ -52,35 +48,16 @@ const sendErrorProd = (err: AppError, req: Request, res: Response): void => {
       return;
     }
 
-    console.error("ERROR:", err);
+    console.error("PROD ERROR:", err);
     res.status(500).json({
       status: "error",
       message: "Something went wrong",
     });
     return;
   }
-
-  if (err.isOperational) {
-    res.status(err.statusCode).render("error", {
-      title: "Something went wrong",
-      msg: err.message,
-    });
-    return;
-  }
-
-  console.error("ERROR:", err);
-  res.status(500).render("error", {
-    title: "Something went wrong",
-    msg: "Please try again later",
-  });
 };
 
-const globalErrorHandler = (
-  err: any,
-  req: Request,
-  res: Response
-  //   next: NextFunction
-): void => {
+const globalErrorHandler = (err: any, req: Request, res: Response): void => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
@@ -89,16 +66,12 @@ const globalErrorHandler = (
     return;
   }
 
-  let error: any = {
-    ...err,
-    message: err.message,
-    name: err.name,
-  };
+  if (!err) return;
 
-  if (error.name === "CastError") error = handleCastErrorDB(error);
-  if (error.code === 11000) error = handleDuplicateFieldDB(error);
+  if (err.name === "CastError") err = handleCastErrorDB(err);
+  if (err.code === 11000) err = handleDuplicateFieldDB(err);
 
-  sendErrorProd(error, req, res);
+  sendErrorProd(err, req, res);
 };
 
 export default globalErrorHandler;
