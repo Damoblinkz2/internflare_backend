@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 
@@ -36,14 +36,12 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 //ADD A USER
 const addNewUsers = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { name, email, password, dob, bio, skillSet, profilePic } = req.body;
 
     const hash = await argon2.hash(password);
 
-    if (!req.body) {
-      return next(new AppError("no user input", 400));
-    }
+    if (!req.body) throw new AppError("no user input", 400)
 
     const newUser = new User({
       name,
@@ -66,12 +64,10 @@ const addNewUsers = catchAsync(
 
 //GET A USER
 const getUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const user = await User.findById(req.params.id);
 
-    if (!user) {
-      return next(new AppError("no user found with this id", 404));
-    }
+    if (!user) throw new AppError("no user found with this id", 404)
 
     res.status(200).json({
       status: "success",
@@ -83,7 +79,7 @@ const getUser = catchAsync(
 //UPDATE A USER
 
 const updateUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { password, ...otherFields } = req.body;
 
     const updatedData: Partial<IUser> = { ...otherFields };
@@ -109,9 +105,7 @@ const updateUser = catchAsync(
       }
     );
 
-    if (!user) {
-      return next(new AppError("No user found with this id", 404));
-    }
+    if (!user) throw new AppError("No user found with this id", 404)
 
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user.toObject();
@@ -125,12 +119,10 @@ const updateUser = catchAsync(
 
 //REMOVE USER
 const deleteUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const deleteUser = await User.findByIdAndDelete(req.params.id);
 
-    if (!deleteUser) {
-      return next(new AppError("no user found with this id", 404));
-    }
+    if (!deleteUser) throw new AppError("no user found with this id", 404)
 
     res.status(200).json({
       status: "success",

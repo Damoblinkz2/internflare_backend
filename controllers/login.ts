@@ -5,7 +5,7 @@ import CompanyProfile, {
   ICompanyProfile,
 } from "../models/companyProfileModel.js";
 import { catchAsync } from "../utils/catchAsync.js";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { AppError } from "../utils/appError.js";
 
 // Create a function to sign tokens
@@ -18,45 +18,42 @@ const signToken = (userId: string, role: string) => {
 };
 
 //LOGIN
-const loginUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password }: { email: string; password: string } = req.body;
+const loginUser = catchAsync(async (req: Request, res: Response) => {
+  const { email, password }: { email: string; password: string } = req.body;
 
-    // 1. Check required fields
-    if (!email || !password)
-      return next(new AppError("Please provide email and password", 400));
+  // 1. Check required fields
+  if (!email || !password)
+    throw new AppError("Please provide email and password", 400);
 
-    const user: IUser | null = await User.findOne({ email });
-    const company: ICompanyProfile | null = await CompanyProfile.findOne({
-      email,
-    });
+  const user: IUser | null = await User.findOne({ email });
+  const company: ICompanyProfile | null = await CompanyProfile.findOne({
+    email,
+  });
 
-    let details: IUser | ICompanyProfile;
+  let details: IUser | ICompanyProfile;
 
-    if (user) {
-      details = user;
-    } else if (company) {
-      details = company;
-    } else {
-      return next(new AppError("Incorrect email or password", 401));
-    }
-
-    if (!(await argon2.verify(details.password, password))) {
-      return next(new AppError("Incorrect email or password", 401));
-    }
-
-    const token = signToken(details._id.toString(), details.role);
-
-    res.status(200).json({
-      status: "success",
-      token,
-      user: {
-        id: details._id,
-        email: details.email,
-        name: "name" in details ? details.name : details.companyName,
-      },
-    });
+  if (user) {
+    details = user;
+  } else if (company) {
+    details = company;
+  } else {
+    throw new AppError("Incorrect email or password", 401);
   }
-);
+
+  if (!(await argon2.verify(details.password, password)))
+    throw new AppError("Incorrect email or password", 401);
+
+  const token = signToken(details._id.toString(), details.role);
+
+  res.status(200).json({
+    status: "success",
+    token,
+    user: {
+      id: details._id,
+      email: details.email,
+      name: "name" in details ? details.name : details.companyName,
+    },
+  });
+});
 
 export default loginUser;
